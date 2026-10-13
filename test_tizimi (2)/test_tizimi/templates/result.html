@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Natijasi va AI Pedagogik Tahlil</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js kutubxonasi vizual grafiklar uchun -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar no-print">
+    <a href="/" class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <span>Test Platformasi</span>
+    </a>
+    <div class="nav-links">
+      <button onclick="window.print()" class="nav-btn nav-btn-outline">
+        <i class="fa-solid fa-print"></i> Natijani Chop Etish / PDF
+      </button>
+      <a href="/student" class="nav-btn nav-btn-primary">
+        <i class="fa-solid fa-house"></i> Kabinetimga Qaytish
+      </a>
+    </div>
+  </nav>
+
+  <!-- Container -->
+  <div class="container" style="max-width: 950px;">
+    
+    <!-- PENDING BANNER: Administrator tasdiqlashini kutish -->
+    <div id="result-pending-banner" style="display: none; text-align: center; background: #ffffff; border-radius: var(--radius-lg); padding: 3.5rem 2rem; box-shadow: var(--shadow-md); margin-top: 2rem; border: 1px solid #e2e8f0;">
+      <div style="width: 84px; height: 84px; background: #e0e7ff; color: #4338ca; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1.5rem auto;">
+        <i class="fa-solid fa-hourglass-half"></i>
+      </div>
+      <h1 style="font-size: 2rem; font-weight: 800; color: #1e1b4b; margin-bottom: 0.75rem; letter-spacing: -0.5px;">TEST YAKUNLANDI</h1>
+      <p style="font-size: 1.2rem; color: #4b5563; max-width: 620px; margin: 0 auto 1.75rem auto; line-height: 1.6;">
+        Natijangiz administrator tomonidan tasdiqlangandan keyin ko'rsatiladi.
+      </p>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem 1.5rem; border-radius: var(--radius-md); display: inline-block; font-size: 0.95rem; color: #475569;">
+        <i class="fa-solid fa-circle-info" style="color: #6366f1; margin-right: 8px;"></i>
+        Administrator natijalarni tekshirib e'lon qilgach, ushbu sahifada to'liq ball, foiz va tavsiyalar aks etadi.
+      </div>
+      <div style="margin-top: 2rem;">
+        <a href="/student" class="btn btn-primary" style="padding: 10px 24px; text-decoration: none;">
+          <i class="fa-solid fa-house"></i> O'quvchi Kabinetiga Qaytish
+        </a>
+      </div>
+    </div>
+
+    <!-- PUBLISHED: Natijalar ko'rinishi -->
+    <div id="result-details-wrap">
+      <!-- Hero Result Card -->
+      <div class="result-hero">
+        <span class="ai-badge" style="background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.4);">
+          <i class="fa-solid fa-square-poll-vertical"></i> Rasmiy Natija Varaqasi
+        </span>
+        <h1 id="res-student-name" style="font-size: 2rem; margin-bottom: 4px;">Yuklanmoqda...</h1>
+        <p style="opacity: 0.9; font-size: 1.05rem;" id="res-test-and-group">Test va Guruh</p>
+
+        <div class="score-circle" id="score-circle">
+          <span class="score-num" id="res-score-percent">0%</span>
+          <span class="score-label">Natija</span>
+        </div>
+
+        <div id="res-badge-wrap">
+          <span class="result-badge" id="res-grade-badge">Baho</span>
+        </div>
+      </div>
+
+    <!-- 4 ta Asosiy Statistika Kartasi -->
+    <div class="result-stats-row">
+      <div class="stat-card">
+        <div class="stat-card-num" style="color: var(--primary);" id="stat-total-q">0</div>
+        <div class="stat-card-title">Jami Savollar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-num" style="color: var(--success);" id="stat-correct-q">0</div>
+        <div class="stat-card-title">To'g'ri Javoblar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-num" style="color: var(--danger);" id="stat-incorrect-q">0</div>
+        <div class="stat-card-title">Noto'g'ri Javoblar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-num" style="color: #6366f1;" id="stat-time-spent">0 daq</div>
+        <div class="stat-card-title">Sarflangan Vaqt</div>
+      </div>
+    </div>
+
+    <!-- Tab Switch Ogohlantirish Kartasi (agar mavjud bo'lsa) -->
+    <div id="anti-cheat-alert-box" style="display: none; background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius-md); padding: 1rem 1.5rem; margin-bottom: 2rem; color: #991b1b; display: flex; align-items: center; gap: 12px;">
+      <i class="fa-solid fa-shield-halved" style="font-size: 1.5rem;"></i>
+      <div>
+        <b>Imtihon nazorati:</b> Test jarayonida <span id="stat-tab-switches" style="font-weight: 800;">0</span> marta ekrandan chiqib ketish holati qayd etildi.
+      </div>
+    </div>
+
+    <!-- GEMINI AI PEDAGOGIK TAHLIL BLOKI -->
+    <div class="ai-report-card">
+      <div class="ai-report-header">
+        <div class="ai-title-wrap">
+          <div class="ai-icon-large">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div>
+            <h2 style="font-size: 1.3rem; font-weight: 800; color: #1e1b4b;">Gemini AI Pedagogik Tahlil Moduli</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Sun'iy intellekt tomonidan o'quvchi xatolari va mavzular o'zlashtirilishi chuqur tahlili</p>
+          </div>
+        </div>
+        <button id="btn-refresh-ai" class="btn btn-outline btn-sm no-print" title="Qaytadan tahlil qilish">
+          <i class="fa-solid fa-arrows-rotate"></i> Qayta tahlil
+        </button>
+      </div>
+
+      <div class="ai-report-body" id="ai-analysis-content">
+        <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+          <i class="fa-solid fa-sparkles fa-spin" style="font-size: 2rem; color: #818cf8; margin-bottom: 1rem;"></i>
+          <p>Gemini AI o'quvchi xatolarini tahlil qilmoqda va pedagogik tavsiyalar tayyorlamoqda...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAVZULAR BO'YICHA STATISTIKA VA CHART -->
+    <div class="topic-progress-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div>
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: #1e293b;">Mavzular Bo'yicha O'zlashtirish Ko'rsatkichlari</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Har bir mavzuda qancha to'g'ri va noto'g'ri javob berilgani</p>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;">
+        <!-- Progress bar lar -->
+        <div id="topics-bars-container">
+          <!-- JS orqali to'ldiriladi -->
+        </div>
+
+        <!-- Radar yoki Bar Chart vizualizatsiyasi -->
+        <div>
+          <canvas id="topicsChart" style="max-height: 280px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVOLLAR VA JAVOBLARNING BATAFSIL TAHLILI -->
+    <div style="margin-bottom: 3rem;">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.5rem; color: #1e293b;">
+        <i class="fa-solid fa-list-check"></i> Savollar va Javoblar Tahlili
+      </h2>
+      <div id="questions-detail-container">
+        <!-- JS orqali to'ldiriladi -->
+      </div>
+    </div>
+    </div> <!-- /#result-details-wrap -->
+
+  </div>
+
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; }
+      .container { max-width: 100% !important; margin: 0 !important; }
+      .result-hero { background: #1e1b4b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+
+  <script src="/static/js/result.js"></script>
+</body>
+</html>

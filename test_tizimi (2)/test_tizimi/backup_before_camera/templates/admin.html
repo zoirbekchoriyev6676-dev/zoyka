@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrator Boshqaruv Markazi — Test Platformasi</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="brand-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <div>
+        <h2>Admin Markazi</h2>
+        <span style="font-size: 0.75rem; color: #94a3b8;" id="admin-user-title">Administrator</span>
+      </div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li>
+        <a class="sidebar-link active" data-panel="dashboard">
+          <i class="fa-solid fa-chart-pie sidebar-icon"></i> Dashboard
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="teachers">
+          <i class="fa-solid fa-chalkboard-user sidebar-icon"></i> O'qituvchilar
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="students">
+          <i class="fa-solid fa-user-graduate sidebar-icon"></i> O'quvchilar
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="subjects">
+          <i class="fa-solid fa-book-open sidebar-icon"></i> Fanlar
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="groups">
+          <i class="fa-solid fa-users sidebar-icon"></i> Guruhlar
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="assignments">
+          <i class="fa-solid fa-link sidebar-icon"></i> Biriktirishlar
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="test-control">
+          <i class="fa-solid fa-tower-broadcast sidebar-icon"></i> Test Nazorati
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="audit">
+          <i class="fa-solid fa-clock-rotate-left sidebar-icon"></i> Audit Logs
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="settings">
+          <i class="fa-solid fa-key sidebar-icon"></i> Gemini AI Kaliti
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button id="btn-logout" class="btn btn-outline btn-block" style="color: #f87171; border-color: #334155;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Chiqish
+      </button>
+    </div>
+  </aside>
+
+  <!-- Asosiy qism -->
+  <main class="admin-main">
+    
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <div class="topbar-title">
+        <h1 id="panel-title">Dashboard</h1>
+      </div>
+
+      <!-- Global O'quvchi Qidiruv -->
+      <div style="position: relative; flex: 1; max-width: 440px; margin: 0 1.5rem;">
+        <div style="display: flex; align-items: center; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: var(--radius-sm); padding: 7px 14px; gap: 10px;">
+          <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8;"></i>
+          <input type="text" id="global-student-search-input" placeholder="O'quvchini tezkor qidirish (Ism, login, student ID)..." style="border: none; background: transparent; outline: none; width: 100%; font-size: 0.9rem;">
+        </div>
+        <div id="global-search-results" style="display: none; position: absolute; top: 110%; left: 0; right: 0; background: #ffffff; border: 1px solid #cbd5e1; border-radius: var(--radius-sm); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15); max-height: 380px; overflow-y: auto; z-index: 999;"></div>
+      </div>
+
+      <div class="topbar-actions">
+        <span id="gemini-key-status" class="key-badge inactive">
+          <i class="fa-solid fa-circle-dot"></i> Gemini AI: Tekshirilmoqda
+        </span>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- ================= 1. DASHBOARD ================= -->
+      <section id="panel-dashboard" class="admin-panel active">
+        <div class="stats-grid">
+          <div class="admin-stat-card">
+            <div class="stat-icon-wrap icon-purple"><i class="fa-solid fa-user-graduate"></i></div>
+            <div class="stat-info">
+              <div class="stat-val" id="dash-total-students">0</div>
+              <div class="stat-desc">Jami O'quvchilar</div>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="stat-icon-wrap icon-blue"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <div class="stat-info">
+              <div class="stat-val" id="dash-total-teachers">0</div>
+              <div class="stat-desc">O'qituvchilar</div>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="stat-icon-wrap icon-green"><i class="fa-solid fa-book-open"></i></div>
+            <div class="stat-info">
+              <div class="stat-val" id="dash-total-subjects">0</div>
+              <div class="stat-desc">Mavjud Fanlar</div>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="stat-icon-wrap icon-amber"><i class="fa-solid fa-award"></i></div>
+            <div class="stat-info">
+              <div class="stat-val" id="dash-avg-score">0%</div>
+              <div class="stat-desc">O'rtacha Natija</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Maktab AI tahlili bloki -->
+        <div class="content-card" style="border: 2px solid #818cf8; background: #faf5ff;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <div class="stat-icon-wrap icon-purple"><i class="fa-solid fa-brain"></i></div>
+              <div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e1b4b;">Maktab / Institut Bo'yicha Bosh AI Tahlil</h3>
+                <p style="font-size: 0.85rem; color: #64748b;">Barcha fanlar, guruhlar va o'qituvchilar natijalari bo'yicha Gemini AI xulosasi</p>
+              </div>
+            </div>
+            <button id="btn-run-school-ai" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
+              <i class="fa-solid fa-sparkles"></i> AI Tahlilni Ishga Tushirish
+            </button>
+          </div>
+          <div id="school-ai-result-box" style="display: none; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed #c084fc; line-height: 1.7;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+          <!-- So'nggi topshirilganlar -->
+          <div class="content-card">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">
+              <i class="fa-solid fa-clock-rotate-left"></i> So'nggi Topshirilgan Imtihonlar
+            </h2>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>O'quvchi</th>
+                    <th>Guruh</th>
+                    <th>Fan / Test</th>
+                    <th>Ball</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-recent-tbody">
+                  <tr><td colspan="4" style="text-align: center;">Yuklanmoqda...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Fanlar reytingi -->
+          <div class="content-card">
+            <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">
+              <i class="fa-solid fa-chart-simple"></i> Fanlar O'zlashtirilishi
+            </h2>
+            <div id="dash-subject-analytics"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. O'QITUVCHILAR ================= -->
+      <section id="panel-teachers" class="admin-panel">
+        <div class="section-header">
+          <h2>O'qituvchilar Ro'yxati</h2>
+          <button class="btn btn-primary btn-sm" id="btn-open-add-teacher">
+            <i class="fa-solid fa-plus"></i> Yangi O'qituvchi Qo'shish
+          </button>
+        </div>
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>F.I.Sh</th>
+                  <th>Login</th>
+                  <th>Ixtisosligi</th>
+                  <th>Telefon</th>
+                  <th>Biriktirilgan fan/guruh</th>
+                  <th>Holat</th>
+                  <th>Amallar</th>
+                </tr>
+              </thead>
+              <tbody id="teachers-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. O'QUVCHILAR BOSHQARUVI ================= -->
+      <section id="panel-students" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>O'quvchilar Boshqaruvi</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Guruhlar bo'yicha ko'rish, o'quvchi profili, individual natijalar va tahrirlash</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btn-open-add-student">
+            <i class="fa-solid fa-plus"></i> Yangi O'quvchi Qo'shish
+          </button>
+        </div>
+
+        <!-- 1. GURUHLAR BO'YICHA STATISTIKA KARTALARI -->
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; color: #1e1b4b;">
+            <i class="fa-solid fa-layer-group"></i> Guruhlar (Sinflar) Ko'rsatkichlari
+          </h3>
+          <div id="admin-group-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px;">
+            <!-- JS orqali guruhlar statistikasi -->
+          </div>
+        </div>
+
+        <!-- 2. TANLANGAN GURUH ICHKI KO'RINISHI -->
+        <div id="admin-group-detail-box" class="content-card" style="display: none; margin-bottom: 1.5rem; border-top: 4px solid #6366f1;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px;">
+            <div>
+              <button class="btn btn-outline btn-sm" id="btn-back-to-all-groups" style="margin-bottom: 6px;">
+                <i class="fa-solid fa-arrow-left"></i> Barcha guruhlarga qaytish
+              </button>
+              <h3 id="group-detail-title" style="font-size: 1.25rem; font-weight: 800; color: #1e1b4b;">10-A Guruhi</h3>
+              <div id="group-detail-kpis" style="display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;"></div>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-add-student-to-this-group">
+              <i class="fa-solid fa-plus"></i> Ushbu Guruhga O'quvchi Qo'shish
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>№</th>
+                  <th>F.I.Sh</th>
+                  <th>Login</th>
+                  <th>Student ID</th>
+                  <th>PIN</th>
+                  <th>Telefon</th>
+                  <th>Topshirgan testlari</th>
+                  <th>Holat</th>
+                  <th>Amallar</th>
+                </tr>
+              </thead>
+              <tbody id="group-students-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. UMUMIY O'QUVCHILAR RO'YXATI -->
+        <div class="content-card" id="all-students-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;">
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e1b4b;">Barcha O'quvchilar Ro'yxati</h3>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="students-table-search" class="form-control" placeholder="Ism yoki kod bo'yicha..." style="max-width: 240px;">
+              <select id="students-table-group-filter" class="form-control" style="max-width: 180px;">
+                <option value="">Barcha guruhlar</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>F.I.Sh</th>
+                  <th>Guruh</th>
+                  <th>ID Kodi</th>
+                  <th>PIN</th>
+                  <th>Login</th>
+                  <th>Topshirgan testlari</th>
+                  <th>Holat</th>
+                  <th>Amallar</th>
+                </tr>
+              </thead>
+              <tbody id="students-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. FANLAR ================= -->
+      <section id="panel-subjects" class="admin-panel">
+        <div class="section-header">
+          <h2>Fanlar Ro'yxati</h2>
+          <button class="btn btn-primary btn-sm" id="btn-open-add-subject">
+            <i class="fa-solid fa-plus"></i> Yangi Fan Qo'shish
+          </button>
+        </div>
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Kodi</th>
+                  <th>Fan Nomi</th>
+                  <th>Tavsif</th>
+                  <th>Mavzular</th>
+                  <th>Savollar</th>
+                </tr>
+              </thead>
+              <tbody id="subjects-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. GURUHLAR ================= -->
+      <section id="panel-groups" class="admin-panel">
+        <div class="section-header">
+          <h2>Guruhlar (Sinflar)</h2>
+          <button class="btn btn-primary btn-sm" id="btn-open-add-group">
+            <i class="fa-solid fa-plus"></i> Yangi Guruh Yaratish
+          </button>
+        </div>
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Guruh Nomi</th>
+                  <th>O'quv Yili</th>
+                  <th>O'quvchilar Soni</th>
+                </tr>
+              </thead>
+              <tbody id="groups-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. BIRIKTIRISHLAR (ASSIGNMENTS) ================= -->
+      <section id="panel-assignments" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>O'qituvchi + Fan + Guruh Biriktirishlari</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Qaysi o'qituvchi qaysi guruhga qaysi fandan dars berishini belgilash</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btn-open-add-assignment">
+            <i class="fa-solid fa-link"></i> Yangi Biriktirish
+          </button>
+        </div>
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>O'qituvchi</th>
+                  <th>Fan</th>
+                  <th>Guruh</th>
+                  <th>O'quv Yili</th>
+                  <th>Testlar</th>
+                  <th>Amallar</th>
+                </tr>
+              </thead>
+              <tbody id="assignments-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 7. AUDIT LOGS ================= -->
+      <section id="panel-audit" class="admin-panel">
+        <div class="section-header">
+          <h2>Tizim Audit Tarixi (Audit Logs)</h2>
+        </div>
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Vaqt</th>
+                  <th>Foydalanuvchi</th>
+                  <th>Harakat (Action)</th>
+                  <th>Tafsilot</th>
+                </tr>
+              </thead>
+              <tbody id="audit-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 8. AI KALITI ================= -->
+      <section id="panel-settings" class="admin-panel">
+        <div class="section-header">
+          <h2>Gemini AI API Kaliti</h2>
+        </div>
+        <div class="content-card" style="max-width: 650px;">
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+            Google Gemini API kaliti orqali o'quvchilarga shaxsiy repetitor tavsiyalari, o'qituvchilarga sinf tahlili va yangi test savollari generatsiyasi ta'minlanadi.
+          </p>
+          <form id="admin-key-form">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label>Gemini API Kalitingiz:</label>
+              <input type="password" id="input-admin-gemini-key" class="form-control" placeholder="AIzaSy..." required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-floppy-disk"></i> Kalitni Saqlash va Faollashtirish
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ================= 9. TEST NAZORATI VA HAYOT SIKLI (STATE MACHINE) ================= -->
+      <section id="panel-test-control" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>Test Nazorati va Hayot Sikli</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+              Server tomonidan boshqariladigan bosqichlar: DRAFT → READY → STARTED → FINISHED → RESULTS_APPROVED → RESULTS_PUBLISHED
+            </p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <select id="tc-select-test" class="form-control" style="min-width: 280px;"></select>
+            <button id="tc-btn-refresh" class="btn btn-outline" title="Yangilash">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Test Holati va Asosiy Boshqaruv Kartasi -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+            <div>
+              <span id="tc-badge-status" class="badge badge-warning" style="font-size: 0.9rem; padding: 6px 14px; text-transform: uppercase;">DRAFT</span>
+              <h3 id="tc-display-title" style="font-size: 1.4rem; font-weight: 800; color: #1e1b4b; margin: 10px 0 4px 0;">Test Tanlanmagan</h3>
+              <p id="tc-display-info" style="font-size: 0.95rem; color: var(--text-muted);">Guruh: — • Fan: — • Vaqt: —</p>
+            </div>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="tc-actions-container">
+              <button id="tc-btn-start" class="btn btn-success" style="display: none; padding: 10px 20px;">
+                <i class="fa-solid fa-play"></i> TESTNI BOSHLASH
+              </button>
+              <button id="tc-btn-finish" class="btn btn-danger" style="display: none; padding: 10px 20px;">
+                <i class="fa-solid fa-stop"></i> TESTNI YAKUNLASH
+              </button>
+              <button id="tc-btn-view-results" class="btn btn-primary" style="display: none; padding: 10px 20px;">
+                <i class="fa-solid fa-list-check"></i> NATIJALARNI KO'RISH
+              </button>
+              <button id="tc-btn-publish" class="btn btn-warning" style="display: none; padding: 10px 20px; font-weight: 700;">
+                <i class="fa-solid fa-bullhorn"></i> NATIJALARNI E'LON QILISH
+              </button>
+            </div>
+          </div>
+
+          <!-- Guruh ko'rsatkichlari -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: 1.25rem;">
+              <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Jami O'quvchilar</div>
+              <div id="tc-stat-total" style="font-size: 1.8rem; font-weight: 800; color: #1e293b; margin-top: 4px;">0</div>
+            </div>
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 1.25rem;">
+              <div style="font-size: 0.85rem; color: #166534; font-weight: 600;">🟢 Faol (Ishlayotganlar)</div>
+              <div id="tc-stat-active" style="font-size: 1.8rem; font-weight: 800; color: #15803d; margin-top: 4px;">0</div>
+            </div>
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 1.25rem;">
+              <div style="font-size: 0.85rem; color: #1e40af; font-weight: 600;">🏁 Yakunlaganlar</div>
+              <div id="tc-stat-finished" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; margin-top: 4px;">0</div>
+            </div>
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius-md); padding: 1.25rem;">
+              <div style="font-size: 0.85rem; color: #991b1b; font-weight: 600;">🔒 Bloklanganlar</div>
+              <div id="tc-stat-blocked" style="font-size: 1.8rem; font-weight: 800; color: #b91c1c; margin-top: 4px;">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1.5. Guruhlar Kesimida Ruxsatnomalar va Natijalar Boshqaruvi -->
+        <div class="content-card" style="margin-bottom: 2rem; border-left: 5px solid #6366f1;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e1b4b; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-users-gear" style="color: #6366f1;"></i> Guruhlar Kesimida Testga Ruxsat Berish va Natijalarni E'lon Qilish
+              </h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                Admin qaysi guruh(lar)ga test boshlanishi va tugashini belgilaydi. Test yakunlangach barcha ishtirokchilarga natijalar e'lon qilinadi.
+              </p>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button id="tc-btn-grant-groups" class="btn btn-success btn-sm" style="padding: 8px 16px;">
+                <i class="fa-solid fa-play"></i> Tanlangan Guruhlarga Boshlash (Ruxsat)
+              </button>
+              <button id="tc-btn-stop-groups" class="btn btn-danger btn-sm" style="padding: 8px 16px;">
+                <i class="fa-solid fa-flag-checkered"></i> Yakunlash va Natijalarni E'lon Qilish
+              </button>
+              <button id="tc-btn-reload-groups" class="btn btn-outline btn-sm" title="Guruhlar holatini yangilash">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px; text-align: center;">
+                    <input type="checkbox" id="tc-groups-check-all">
+                  </th>
+                  <th>Guruh</th>
+                  <th>O'quvchilar</th>
+                  <th>Test Holati</th>
+                  <th>Boshlangan Vaqti</th>
+                  <th>Yakunlangan Vaqti</th>
+                  <th>Natijalar</th>
+                  <th>Tezkor Amal</th>
+                </tr>
+              </thead>
+              <tbody id="tc-groups-access-tbody">
+                <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Test tanlanmagan</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 2rem;">
+          <!-- 2. O'quvchilar Real-vaqt Nazorati va Bloklanganlar Jurnali -->
+          <div class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e1b4b;">
+                <i class="fa-solid fa-users-viewfinder"></i> O'quvchilar Nazorat Jurnali
+              </h3>
+              <span id="tc-live-indicator" style="font-size: 0.8rem; color: #16a34a; font-weight: 600;">
+                <i class="fa-solid fa-circle-dot"></i> Jonli kuzatuv faol
+              </span>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>O'quvchi</th>
+                    <th>Holati</th>
+                    <th>Oyna almashtirish</th>
+                    <th>Fullscreen</th>
+                    <th>Yangilanish</th>
+                    <th>Yuz yo'qolishi</th>
+                    <th>Amallar</th>
+                  </tr>
+                </thead>
+                <tbody id="tc-students-tbody">
+                  <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Test tanlanmagan</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3. TEST NAZORATI (PROCTORING) SOZLAMALARI -->
+          <div class="content-card">
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e1b4b; margin-bottom: 1.25rem;">
+              <i class="fa-solid fa-sliders"></i> Test Nazorati Sozlamalari
+            </h3>
+            <form id="tc-form-settings">
+              <div style="margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" id="tc-set-tab-switch" checked> Oyna almashtirish nazorati
+                </label>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; padding-left: 24px;">
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">Limit:</span>
+                  <input type="number" id="tc-set-tab-limit" class="form-control form-control-sm" style="width: 70px;" value="3" min="1" max="10">
+                </div>
+              </div>
+
+              <div style="margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" id="tc-set-fullscreen" checked> Fullscreen nazorati
+                </label>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; padding-left: 24px;">
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">Limit:</span>
+                  <input type="number" id="tc-set-fullscreen-limit" class="form-control form-control-sm" style="width: 70px;" value="3" min="1" max="10">
+                </div>
+              </div>
+
+              <div style="margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" id="tc-set-reload" checked> Sahifa yangilanishi (F5)
+                </label>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; padding-left: 24px;">
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">Limit:</span>
+                  <input type="number" id="tc-set-reload-limit" class="form-control form-control-sm" style="width: 70px;" value="3" min="1" max="10">
+                </div>
+              </div>
+
+              <div style="margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" id="tc-set-camera"> Kamera nazorati
+                </label>
+                <div style="padding-left: 24px; margin-top: 4px;">
+                  <select id="tc-set-camera-policy" class="form-control form-control-sm" style="font-size: 0.85rem;">
+                    <option value="allow_without_camera">Kamerasiz davom ettirish</option>
+                    <option value="block_without_camera">Kirishni bloklash</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" id="tc-set-face-lost"> Yuz nazorati (ekrandan yo'qolish)
+                </label>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; padding-left: 24px;">
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">Limit:</span>
+                  <input type="number" id="tc-set-face-limit" class="form-control form-control-sm" style="width: 70px;" value="5" min="1" max="20">
+                </div>
+              </div>
+
+              <div style="margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" id="tc-set-multiple-faces"> Bir nechta yuz nazorati
+                </label>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px; padding-left: 24px;">
+                  <span style="font-size: 0.85rem; color: var(--text-muted);">Chegara:</span>
+                  <input type="number" id="tc-set-multiple-limit" class="form-control form-control-sm" style="width: 70px;" value="2" min="2" max="5">
+                </div>
+              </div>
+
+              <div style="margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" id="tc-set-suspicious" checked> Shubhali harakatlarni qayd qilish
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block" style="padding: 10px;">
+                <i class="fa-solid fa-floppy-disk"></i> Sozlamalarni Saqlash
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- MODALLAR -->
+  <!-- 1. O'qituvchi qo'shish -->
+  <div class="modal-overlay" id="modal-add-teacher">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Yangi O'qituvchi Qo'shish</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-teacher')">&times;</button>
+      </div>
+      <form id="form-add-teacher">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>F.I.Sh:</label>
+          <input type="text" id="t-fullname" class="form-control" placeholder="Masalan: O'qituvchi F.I.Sh" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Login:</label>
+            <input type="text" id="t-username" class="form-control" placeholder="login" required>
+          </div>
+          <div class="form-group">
+            <label>Parol:</label>
+            <input type="password" id="t-password" class="form-control" placeholder="Parol" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>Ixtisosligi / Kafedrasi:</label>
+          <input type="text" id="t-specialty" class="form-control" placeholder="Masalan: IT o'qituvchisi">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-teacher')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. O'quvchi qo'shish -->
+  <div class="modal-overlay" id="modal-add-student">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Yangi O'quvchi Qo'shish</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-student')">&times;</button>
+      </div>
+      <form id="form-add-student">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>F.I.Sh:</label>
+          <input type="text" id="st-fullname" class="form-control" placeholder="Masalan: O'quvchi F.I.Sh" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Guruhi:</label>
+            <select id="st-group-select" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>O'quvchi ID Kodi:</label>
+            <input type="text" id="st-code" class="form-control" placeholder="Masalan: ID001" required>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>PIN Kod (4 xonali):</label>
+            <input type="text" id="st-pin" class="form-control" placeholder="4 xonali PIN" required>
+          </div>
+          <div class="form-group">
+            <label>Login:</label>
+            <input type="text" id="st-username" class="form-control" placeholder="login" required>
+          </div>
+        </div>
+        <input type="hidden" id="st-password" value="">
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 1rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-student')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Fan qo'shish -->
+  <div class="modal-overlay" id="modal-add-subject">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Yangi Fan Qo'shish</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-subject')">&times;</button>
+      </div>
+      <form id="form-add-subject">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Fan Nomi:</label>
+            <input type="text" id="sub-name" class="form-control" placeholder="Matematika" required>
+          </div>
+          <div class="form-group">
+            <label>Fan Kodi:</label>
+            <input type="text" id="sub-code" class="form-control" placeholder="MAT-01" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>Tavsif:</label>
+          <input type="text" id="sub-desc" class="form-control" placeholder="Algebra, Geometriya...">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-subject')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Guruh qo'shish -->
+  <div class="modal-overlay" id="modal-add-group">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Yangi Guruh Yaratish</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-group')">&times;</button>
+      </div>
+      <form id="form-add-group">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Guruh Nomi:</label>
+          <input type="text" id="grp-name" class="form-control" placeholder="10-A" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>O'quv Yili:</label>
+          <input type="text" id="grp-year" class="form-control" value="2026/2027" required>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-group')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Biriktirish (Assignment) -->
+  <div class="modal-overlay" id="modal-add-assignment">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>O'qituvchi Biriktirish</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-assignment')">&times;</button>
+      </div>
+      <form id="form-add-assignment">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>O'qituvchi:</label>
+          <select id="as-teacher-select" class="form-control" required></select>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Fan:</label>
+            <select id="as-subject-select" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>Guruh:</label>
+            <select id="as-group-select" class="form-control" required></select>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-assignment')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Biriktirish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: O'QUVCHI PROFILI -->
+  <div class="modal-overlay" id="modal-student-profile">
+    <div class="modal-box" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div>
+          <h3 id="prof-student-name" style="font-size: 1.35rem; font-weight: 800; color: #1e1b4b; margin-bottom: 2px;">O'quvchi Profili</h3>
+          <span id="prof-student-group-badge" class="badge badge-primary">Guruh</span>
+          <span id="prof-student-status-badge" class="badge badge-success">Faol</span>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-student-profile')">&times;</button>
+      </div>
+
+      <!-- Shaxsiy ma'lumotlar va Amallar paneli -->
+      <div class="content-card" style="margin-bottom: 1.25rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; flex: 1;">
+            <div><span style="color: #64748b; font-size: 0.8rem;">Login:</span> <b id="prof-username">-</b></div>
+            <div><span style="color: #64748b; font-size: 0.8rem;">Student ID:</span> <b id="prof-student-code">-</b></div>
+            <div><span style="color: #64748b; font-size: 0.8rem;">PIN kod:</span> <b id="prof-pin">-</b></div>
+            <div><span style="color: #64748b; font-size: 0.8rem;">Telefon:</span> <b id="prof-phone">-</b></div>
+            <div><span style="color: #64748b; font-size: 0.8rem;">Ro'yxatdan o'tgan:</span> <b id="prof-registered">-</b></div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-outline btn-sm" id="btn-prof-edit-student">
+              <i class="fa-solid fa-pen"></i> Tahrirlash
+            </button>
+            <button class="btn btn-outline btn-sm" id="btn-prof-toggle-active">
+              <i class="fa-solid fa-power-off"></i> Holatni almashtirish
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 ta KPI Ko'rsatkichlar -->
+      <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1.25rem;">
+        <div class="admin-stat-card" style="padding: 12px;">
+          <div class="stat-info">
+            <span class="stat-label" style="font-size: 0.75rem;">Jami Testlar</span>
+            <span class="stat-value" id="prof-stat-total" style="font-size: 1.35rem;">0</span>
+          </div>
+        </div>
+        <div class="admin-stat-card" style="padding: 12px;">
+          <div class="stat-info">
+            <span class="stat-label" style="font-size: 0.75rem;">O'rtacha Ball</span>
+            <span class="stat-value" id="prof-stat-avg" style="font-size: 1.35rem; color: #4f46e5;">0%</span>
+          </div>
+        </div>
+        <div class="admin-stat-card" style="padding: 12px;">
+          <div class="stat-info">
+            <span class="stat-label" style="font-size: 0.75rem;">Eng Yuqori Ball</span>
+            <span class="stat-value" id="prof-stat-max" style="font-size: 1.35rem; color: #16a34a;">0%</span>
+          </div>
+        </div>
+        <div class="admin-stat-card" style="padding: 12px;">
+          <div class="stat-info">
+            <span class="stat-label" style="font-size: 0.75rem;">Muvaffaqiyatli</span>
+            <span class="stat-value" id="prof-stat-passed" style="font-size: 1.35rem; color: #0284c7;">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fanlar bo'yicha ko'rsatkichlar -->
+      <div class="content-card" style="margin-bottom: 1.25rem;">
+        <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e1b4b;">
+          <i class="fa-solid fa-book-bookmark"></i> Fanlar Bo'yicha O'zlashtirish Ko'rsatkichlari
+        </h4>
+        <div id="prof-subject-bars" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+
+      <!-- O'quvchi Natijasi Trend Grafigi -->
+      <div class="content-card" style="margin-bottom: 1.25rem;">
+        <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e1b4b;">
+          <i class="fa-solid fa-chart-line"></i> Natijalar Dinamikasi (Progress Trendi)
+        </h4>
+        <div id="prof-trend-chart-box" style="padding: 10px 0;"></div>
+      </div>
+
+      <!-- Gemini AI Xulosa -->
+      <div class="content-card" style="margin-bottom: 1.25rem; border: 1px solid #c084fc; background: #faf5ff;">
+        <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: #6b21a8;">
+          <i class="fa-solid fa-brain"></i> Gemini AI Pedagogik Tahlili
+        </h4>
+        <div id="prof-ai-box" style="font-size: 0.9rem; line-height: 1.7; color: #1e1b4b;"></div>
+      </div>
+
+      <!-- Imtihonlar Tarixi Jadvali -->
+      <div class="content-card">
+        <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e1b4b;">
+          <i class="fa-solid fa-clock-rotate-left"></i> Barcha Topshirilgan Imtihonlar Tarixi
+        </h4>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Fan</th>
+                <th>Test Nomi</th>
+                <th>Natija</th>
+                <th>To'g'ri/Jami</th>
+                <th>Sana</th>
+                <th>O'qituvchi</th>
+              </tr>
+            </thead>
+            <tbody id="prof-history-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: O'quvchini Tahrirlash -->
+  <div class="modal-overlay" id="modal-edit-student">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>O'quvchi Ma'lumotlarini Tahrirlash</h3>
+        <button class="modal-close" onclick="closeModal('modal-edit-student')">&times;</button>
+      </div>
+      <form id="form-edit-student">
+        <input type="hidden" id="edit-st-id">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>F.I.Sh (To'liq ism):</label>
+          <input type="text" id="edit-st-fullname" class="form-control" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Login (username):</label>
+            <input type="text" id="edit-st-username" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Guruh:</label>
+            <select id="edit-st-group" class="form-control" required></select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Student ID (Kod):</label>
+            <input type="text" id="edit-st-code" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>PIN kod:</label>
+            <input type="text" id="edit-st-pin" class="form-control" required maxlength="6">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Telefon:</label>
+            <input type="text" id="edit-st-phone" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Holat:</label>
+            <select id="edit-st-active" class="form-control">
+              <option value="1">Faol</option>
+              <option value="0">Nofaol (Bloklangan)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>Yangi parol (o'zgartirish kerak bo'lsa kiriting):</label>
+          <input type="password" id="edit-st-password" class="form-control" placeholder="Bo'sh qoldirilsa eski parol qoladi">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-edit-student')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: NATIJALARNI KO'RISH VA TASDIQLASH / E'LON QILISH -->
+  <div class="modal-overlay" id="modal-test-results-view">
+    <div class="modal-box" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size: 1.35rem; font-weight: 800; color: #1e1b4b; margin-bottom: 2px;">Guruh Natijalari Ko'rigi</h3>
+          <p id="m-res-subtitle" style="font-size: 0.85rem; color: var(--text-muted);">Natijalar tekshiruvda. E'lon qilingandan keyingina o'quvchilarga ko'rinadi.</p>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-test-results-view')">&times;</button>
+      </div>
+      <div id="m-res-content" style="margin-top: 1rem;">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>O'quvchi</th>
+                <th>To'g'ri / Jami</th>
+                <th>Ball / Foiz</th>
+                <th>Qoidabuzarlik</th>
+                <th>Holat</th>
+              </tr>
+            </thead>
+            <tbody id="m-res-tbody">
+              <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">Yuklanmoqda...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">
+          <i class="fa-solid fa-circle-info"></i> Oltin qoida: Natijalar faqat backendda hisoblanadi.
+        </span>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-test-results-view')">Yopish</button>
+          <button type="button" id="m-res-btn-publish" class="btn btn-warning" style="font-weight: 700;">
+            <i class="fa-solid fa-bullhorn"></i> NATIJALARNI E'LON QILISH
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>

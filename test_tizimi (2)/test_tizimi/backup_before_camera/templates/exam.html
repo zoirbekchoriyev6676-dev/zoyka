@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imtihon Jarayoni — Test Platformasi</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="user-select: none;">
+
+  <!-- Header Bar -->
+  <div class="test-header-bar" style="margin: 1rem auto 1.5rem auto; max-width: 1100px;">
+    <div>
+      <div class="student-tag">
+        <i class="fa-solid fa-user-graduate"></i> <span id="hdr-student-name">O'quvchi</span>
+        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 8px;">
+          (<span id="hdr-student-group">Guruh</span>)
+        </span>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;" id="hdr-test-title">
+        Imtihon yuklanmoqda...
+      </div>
+    </div>
+
+    <!-- Anti-Cheat Status & Timer -->
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <div class="anti-cheat-tags">
+        <button id="btn-fullscreen" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" title="To'liq ekranga o'tish">
+          <i class="fa-solid fa-expand"></i> Katta ekran
+        </button>
+        <span id="tab-warning-tag" class="tag-warning" style="display: none;">
+          <i class="fa-solid fa-triangle-exclamation"></i> Chiqishlar: <b id="tab-switch-count">0</b>
+        </span>
+      </div>
+
+      <div class="timer-box" id="timer-box">
+        <i class="fa-regular fa-clock"></i> <span id="timer-display">00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workspace -->
+  <div class="container" style="max-width: 1100px; margin-top: 0;">
+    <div class="test-workspace">
+      
+      <!-- Savol kartochkasi -->
+      <div class="question-card" id="question-card-container">
+        <div class="question-meta-bar">
+          <div class="q-number" id="q-number-display">Savol 1 / 10</div>
+          <div style="display: flex; gap: 8px;">
+            <span class="q-topic-tag" id="q-topic-display">Mavzu</span>
+            <span class="meta-chip" id="q-difficulty-display">O'rta</span>
+          </div>
+        </div>
+
+        <div class="question-text" id="q-text-display">
+          Savol yuklanmoqda...
+        </div>
+
+        <div class="options-list" id="options-container"></div>
+
+        <div class="question-actions">
+          <button id="btn-prev" class="btn btn-outline">
+            <i class="fa-solid fa-chevron-left"></i> Oldingi
+          </button>
+          
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-clear" class="btn btn-outline" title="Tanlangan javobni bekor qilish">
+              <i class="fa-solid fa-eraser"></i> Tozalash
+            </button>
+            <button id="btn-next" class="btn btn-primary">
+              Keyingi <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Savollar palitrasi -->
+      <div class="palette-card">
+        <h3><i class="fa-solid fa-grip"></i> Savollar Navigatsiyasi</h3>
+        
+        <div class="palette-grid" id="palette-grid"></div>
+
+        <div class="palette-legend">
+          <div class="legend-row">
+            <div class="legend-dot" style="background: var(--success);"></div>
+            <span>Javob berilgan (<b id="count-answered">0</b>)</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot" style="background: #f8fafc; border: 1px solid var(--border);"></div>
+            <span>Javob berilmagan (<b id="count-unanswered">0</b>)</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot" style="background: var(--primary);"></div>
+            <span>Hozirgi savol</span>
+          </div>
+        </div>
+
+        <!-- Kamera AI Nazorati Vidjeti (Sozlamaga ko'ra faollashadi) -->
+        <div id="camera-proctoring-box" style="display: none; margin-top: 1.5rem; background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; text-align: center;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #475569; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span><i class="fa-solid fa-camera"></i> Kamera Nazorati</span>
+            <span id="camera-status-indicator" style="font-size: 0.75rem; color: #16a34a;"><i class="fa-solid fa-circle"></i> Faol</span>
+          </div>
+          <div style="position: relative; width: 100%; height: 140px; background: #0f172a; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+            <video id="proctoring-video" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
+            <div id="camera-face-badge" style="position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.65); color: #fff; font-size: 0.72rem; padding: 2px 6px; border-radius: 4px;">
+              Kutilmoqda...
+            </div>
+          </div>
+          <div id="camera-notice-text" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">
+            Yuzingiz doimiy kadr markazida bo'lishi shart
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <button id="btn-finish" class="btn btn-success btn-block" style="padding: 12px;">
+            <i class="fa-solid fa-check-double"></i> Testni Yakunlash
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Offline / Online Holat Banniri -->
+  <div id="offline-status-banner" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: #dc2626; color: #fff; text-align: center; padding: 12px; z-index: 99999; font-weight: 700; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+    <span id="offline-banner-text">⚠️ Internet aloqasi uzildi. Javoblaringiz saqlanishi tekshirilmoqda.</span>
+  </div>
+
+  <!-- Ogohlantirish modali (Anti-cheat & Bloklash) -->
+  <div class="modal-overlay" id="anti-cheat-modal">
+    <div class="modal-box" style="text-align: center; max-width: 480px;">
+      <div id="modal-warning-icon" style="color: var(--danger); font-size: 3.5rem; margin-bottom: 1rem;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 id="modal-warning-title" style="color: #991b1b; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.75rem;">OGOHLANTIRISH!</h3>
+      <p id="modal-warning-text" style="color: #475569; margin-bottom: 1.5rem; line-height: 1.5;">
+        Siz imtihon oynasidan tashqariga chiqdingiz! Imtihon qoidalariga amal qiling. Barcha hodisalar tizimda qayd etilmoqda!
+      </p>
+      <p id="modal-tab-count-wrap" style="font-weight: 700; color: #b91c1c; margin-bottom: 1.5rem;">
+        Qoidabuzarliklar soni: <span id="modal-tab-count">1</span>
+      </p>
+      <button class="btn btn-primary" id="btn-modal-continue" style="width: 100%; padding: 12px;">
+        Tushundim, testni davom ettirish
+      </button>
+      <div id="modal-blocked-waiting" style="display: none; padding: 10px; background: #fee2e2; border-radius: var(--radius-sm); color: #991b1b; font-size: 0.9rem; font-weight: 600;">
+        <i class="fa-solid fa-spinner fa-spin"></i> Administrator qarori kutilmoqda...
+      </div>
+    </div>
+  </div>
+
+  <!-- Yakunlash tasdiqlash modali -->
+  <div class="modal-overlay" id="confirm-finish-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Imtihonni topshirasizmi?</h3>
+        <button class="modal-close" id="btn-close-confirm">&times;</button>
+      </div>
+      <div style="margin: 1.5rem 0; line-height: 1.6;" id="confirm-finish-message"></div>
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="btn btn-outline" id="btn-cancel-finish">Orqaga qaytish</button>
+        <button class="btn btn-success" id="btn-submit-confirmed">
+          <i class="fa-solid fa-check"></i> Ha, topshirish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/exam.js"></script>
+</body>
+</html>

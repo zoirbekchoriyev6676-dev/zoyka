@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O'quvchi Kabineti — Test Platformasi</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <style>
+    .student-hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .subject-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      border: 2px solid var(--border);
+      transition: var(--transition);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .subject-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/student" class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <span>Test Platformasi</span>
+    </a>
+    <div class="nav-links">
+      <span class="badge badge-primary" style="padding: 8px 14px; font-size: 0.9rem;" id="nav-student-tag">
+        <i class="fa-solid fa-user-graduate"></i> O'quvchi
+      </span>
+      <button id="btn-logout" class="nav-btn nav-btn-outline" style="color: #ef4444; border-color: #fecaca;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Chiqish
+      </button>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 1050px;">
+    
+    <!-- Hero / Welcome Banner -->
+    <div class="student-hero">
+      <div>
+        <span class="ai-badge" style="background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.3);">
+          <i class="fa-solid fa-school"></i> O'quvchi Shaxsiy Profili
+        </span>
+        <h1 style="font-size: 2.2rem; font-weight: 800; margin: 8px 0;" id="hero-student-name">Assalomu alaykum!</h1>
+        <p style="opacity: 0.9; font-size: 1.05rem;">
+          Guruhingiz: <b id="hero-group-name" style="color: #a5b4fc;">10-A</b> &bull; ID: <code id="hero-student-code" style="color: #fef08a;">Ali_7309</code>
+        </p>
+      </div>
+
+      <div style="text-align: right;">
+        <button id="btn-view-map" class="btn btn-outline" style="background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.4); padding: 12px 20px;">
+          <i class="fa-solid fa-map"></i> Mening Ta'lim Xaritam
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. MENING FANLARIM -->
+    <div id="section-my-subjects">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.4rem; font-weight: 800; color: #1e1b4b;">
+          <i class="fa-solid fa-book-open"></i> Mening Fanlarim
+        </h2>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">
+          Guruhingizga tegishli fanlar va mavjud imtihonlar ro'yxati (Fan ustiga bosing)
+        </p>
+      </div>
+
+      <div class="stats-grid" id="subjects-grid">
+        <!-- JS orqali -->
+      </div>
+    </div>
+
+    <!-- 2. TA'LIM XARITASI (KNOWLEDGE MAP) -->
+    <div id="section-learning-map" style="display: none; margin-top: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div>
+          <h2 style="font-size: 1.4rem; font-weight: 800; color: #1e1b4b;">
+            <i class="fa-solid fa-compass-drafting"></i> Shaxsiy Ta'lim Xaritasi
+          </h2>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Barcha fanlar va mavzular bo'yicha bilimlaringiz tahlili va o'sish dinamikasi</p>
+        </div>
+        <button id="btn-back-to-subjects" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-arrow-left"></i> Fanlarimga qaytish
+        </button>
+      </div>
+
+      <!-- Fanlar o'zlashtirilishi -->
+      <div class="content-card">
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;">Fanlar Bo'yicha Umumiy Natijalar</h3>
+        <div id="map-subject-bars"></div>
+      </div>
+
+      <!-- Mavzular o'zlashtirilishi -->
+      <div class="content-card">
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;">Mavzular Bo'yicha Tahlil (Kuchli va Muammoli Mavzular)</h3>
+        <div id="map-topic-bars"></div>
+      </div>
+
+      <!-- Dinamika grafigi -->
+      <div class="content-card">
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;">So'nggi Imtihonlar Natijalari Dinamikasi (Trend)</h3>
+        <canvas id="trendChart" style="max-height: 250px;"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FAN IMTIHONLARI MODALI -->
+  <div class="modal-overlay" id="modal-subject-exams">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="modal-sub-title" style="color: #1e1b4b;">Fan</h3>
+          <p id="modal-teacher-name" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-subject-exams')">&times;</button>
+      </div>
+
+      <div style="margin: 1.5rem 0;">
+        <h4 style="font-weight: 700; margin-bottom: 12px; color: #334155;">Faol Imtihonlar:</h4>
+        <div id="modal-exams-list">
+          <!-- JS orqali -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/student.js?v=20261013_fix"></script>
+</body>
+</html>

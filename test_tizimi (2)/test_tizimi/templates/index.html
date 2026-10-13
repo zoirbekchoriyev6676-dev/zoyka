@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Platformasi — Bilimlarni Sinash va AI Tahlil</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <span>Test Platformasi</span>
+    </a>
+    <div class="nav-links">
+      <a href="/admin" class="nav-btn nav-btn-outline">
+        <i class="fa-solid fa-chalkboard-user"></i> O'qituvchi / Admin
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="entrance-card">
+      <div class="hero-header">
+        <div class="ai-badge">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Gemini AI integratsiyalangan
+        </div>
+        <h1>Onlayn Test Sinovi</h1>
+        <p>Bilimingizni sinab ko'ring va sun'iy intellekt yordamida har bir mavzu bo'yicha shaxsiy tahlilga ega bo'ling.</p>
+      </div>
+
+      <form id="student-entry-form">
+        <!-- Ism va Familiya -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="first-name"><i class="fa-solid fa-user"></i> Ismingiz</label>
+            <input type="text" id="first-name" class="form-control" placeholder="Masalan: Zoirbek" required>
+          </div>
+          <div class="form-group">
+            <label for="last-name"><i class="fa-regular fa-user"></i> Familiyangiz</label>
+            <input type="text" id="last-name" class="form-control" placeholder="Masalan: Choriyev" required>
+          </div>
+        </div>
+
+        <!-- Guruh tanlash -->
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="group-select"><i class="fa-solid fa-users"></i> Guruhingizni tanlang</label>
+          <select id="group-select" class="form-control" required>
+            <option value="">Guruhni tanlang...</option>
+          </select>
+        </div>
+
+        <!-- Test tanlash -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-file-lines"></i> Faol Testlardan birini tanlang</label>
+          <div id="test-list" class="test-selection-list">
+            <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              <i class="fa-solid fa-spinner fa-spin"></i> Testlar yuklanmoqda...
+            </div>
+          </div>
+        </div>
+
+        <input type="hidden" id="selected-test-id" value="">
+
+        <!-- Testni boshlash tugmasi -->
+        <div style="margin-top: 2rem;">
+          <button type="submit" id="start-btn" class="btn btn-primary btn-block" style="padding: 14px; font-size: 1.1rem;" disabled>
+            <i class="fa-solid fa-play"></i> Testni Boshlash
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer style="text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+    &copy; 2026 Test Tizimi Platformasi &bull; Gemini AI Pedagogik Tahlil Moduli
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

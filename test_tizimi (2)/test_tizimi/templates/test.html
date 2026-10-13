@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Sinovi Jarayoni</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="user-select: none;">
+
+  <!-- Test Header Bar -->
+  <div class="test-header-bar" style="margin: 1rem auto 1.5rem auto; max-width: 1100px;">
+    <div>
+      <div class="student-tag">
+        <i class="fa-solid fa-user-graduate"></i> <span id="hdr-student-name">O'quvchi</span>
+        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: normal; margin-left: 8px;">
+          (<span id="hdr-student-group">Guruh</span>)
+        </span>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;" id="hdr-test-title">
+        Test nomi
+      </div>
+    </div>
+
+    <!-- Anti-Cheat Status & Timer -->
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <div class="anti-cheat-tags">
+        <button id="btn-fullscreen" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" title="To'liq ekranga o'tish">
+          <i class="fa-solid fa-expand"></i> Katta ekran
+        </button>
+        <span id="tab-warning-tag" class="tag-warning" style="display: none;">
+          <i class="fa-solid fa-triangle-exclamation"></i> Oynadan chiqish: <b id="tab-switch-count">0</b>
+        </span>
+      </div>
+
+      <div class="timer-box" id="timer-box">
+        <i class="fa-regular fa-clock"></i> <span id="timer-display">00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Container / Workspace -->
+  <div class="container" style="max-width: 1100px; margin-top: 0;">
+    <div class="test-workspace">
+      
+      <!-- Chap tomon: Savol kartochkasi -->
+      <div class="question-card" id="question-card-container">
+        <div class="question-meta-bar">
+          <div class="q-number" id="q-number-display">Savol 1 / 10</div>
+          <div style="display: flex; gap: 8px;">
+            <span class="q-topic-tag" id="q-topic-display">Mavzu</span>
+            <span class="meta-chip" id="q-difficulty-display">O'rta</span>
+          </div>
+        </div>
+
+        <div class="question-text" id="q-text-display">
+          Savol yuklanmoqda...
+        </div>
+
+        <div class="options-list" id="options-container">
+          <!-- Variantlar JavaScript orqali joylanadi -->
+        </div>
+
+        <div class="question-actions">
+          <button id="btn-prev" class="btn btn-outline">
+            <i class="fa-solid fa-chevron-left"></i> Oldingi
+          </button>
+          
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-clear" class="btn btn-outline" title="Tanlangan javobni bekor qilish">
+              <i class="fa-solid fa-eraser"></i> Tozalash
+            </button>
+            <button id="btn-next" class="btn btn-primary">
+              Keyingi <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- O'ng tomon: Savollar palitrasi va yakunlash -->
+      <div class="palette-card">
+        <h3><i class="fa-solid fa-grip"></i> Savollar Navigatsiyasi</h3>
+        
+        <div class="palette-grid" id="palette-grid">
+          <!-- 1, 2, 3... tugmalar -->
+        </div>
+
+        <div class="palette-legend">
+          <div class="legend-row">
+            <div class="legend-dot" style="background: var(--success);"></div>
+            <span>Javob berilgan (<b id="count-answered">0</b>)</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot" style="background: #f8fafc; border: 1px solid var(--border);"></div>
+            <span>Javob berilmagan (<b id="count-unanswered">0</b>)</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot" style="background: var(--primary);"></div>
+            <span>Hozirgi savol</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+          <button id="btn-finish" class="btn btn-success btn-block" style="padding: 12px;">
+            <i class="fa-solid fa-check-double"></i> Testni Yakunlash
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Ogohlantirish modali (Anti-cheat tab switch) -->
+  <div class="modal-overlay" id="anti-cheat-modal">
+    <div class="modal-box" style="text-align: center;">
+      <div style="color: var(--danger); font-size: 3rem; margin-bottom: 1rem;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 style="color: #991b1b; margin-bottom: 0.5rem;">OGOHLANTIRISH!</h3>
+      <p style="color: #475569; margin-bottom: 1.5rem;">
+        Siz test oynasidan tashqariga chiqdingiz! Imtihon vaqtida boshqa dasturlarga yoki brauzer tablariga o'tish qat'iyan taqiqlanadi.
+        Barcha chiqishlar tizimda qayd etilmoqda!
+      </p>
+      <p style="font-weight: 700; color: #b91c1c; margin-bottom: 1.5rem;">
+        Oynadan chiqishlar soni: <span id="modal-tab-count">1</span>
+      </p>
+      <button class="btn btn-primary" id="btn-modal-continue" style="width: 100%;">
+        Tushundim, testni davom ettirish
+      </button>
+    </div>
+  </div>
+
+  <!-- Testni yakunlash tasdiqlash modali -->
+  <div class="modal-overlay" id="confirm-finish-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Testni yakunlaysizmi?</h3>
+        <button class="modal-close" id="btn-close-confirm">&times;</button>
+      </div>
+      <div style="margin: 1.5rem 0; line-height: 1.6;" id="confirm-finish-message">
+        Siz barcha savollarga javob berdingizmi?
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="btn btn-outline" id="btn-cancel-finish">Orqaga qaytish</button>
+        <button class="btn btn-success" id="btn-submit-confirmed">
+          <i class="fa-solid fa-check"></i> Ha, topshirish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/test.js"></script>
+</body>
+</html>

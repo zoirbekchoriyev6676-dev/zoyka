@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O'qituvchi Kabineti — Test Platformasi</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" style="background: #1e1b4b;">
+    <div class="sidebar-header" style="border-bottom-color: #312e81;">
+      <div class="brand-icon" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
+        <i class="fa-solid fa-chalkboard-user"></i>
+      </div>
+      <div>
+        <h2 id="teacher-full-name">O'qituvchi</h2>
+        <span style="font-size: 0.75rem; color: #a5b4fc;" id="teacher-spec-title">Fani</span>
+      </div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li>
+        <a class="sidebar-link active" data-panel="assignments">
+          <i class="fa-solid fa-layer-group sidebar-icon"></i> Fan & Guruhlarim
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="test-builder">
+          <i class="fa-solid fa-file-circle-plus sidebar-icon" style="color: #38bdf8;"></i> Test Yaratish (3 xil)
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="test-bank">
+          <i class="fa-solid fa-folder-open sidebar-icon" style="color: #fbbf24;"></i> Mening Test Bazam
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="question-bank">
+          <i class="fa-solid fa-database sidebar-icon"></i> Savollar Banki
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="ai-generator">
+          <i class="fa-solid fa-wand-magic-sparkles sidebar-icon" style="color: #c084fc;"></i> AI Test Generatori
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="tests">
+          <i class="fa-solid fa-file-signature sidebar-icon"></i> Imtihonlarim & Blueprint
+        </a>
+      </li>
+      <li>
+        <a class="sidebar-link" data-panel="results">
+          <i class="fa-solid fa-chart-column sidebar-icon"></i> Sinf Tahlili & AI Xulosa
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer" style="border-top-color: #312e81;">
+      <button id="btn-logout" class="btn btn-outline btn-block" style="color: #f87171; border-color: #4338ca;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Chiqish
+      </button>
+    </div>
+  </aside>
+
+  <!-- Asosiy qism -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="topbar-title">
+        <h1 id="teacher-panel-title">Mening Fanlarim va Guruhlarim</h1>
+      </div>
+      <div class="topbar-actions">
+        <span class="badge badge-primary" style="font-size: 0.85rem; padding: 6px 12px;">
+          <i class="fa-solid fa-user-check"></i> O'qituvchi Kabineti
+        </span>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- 1. FANLAR VA GURUHLARIM -->
+      <section id="panel-assignments" class="admin-panel active">
+        <div class="section-header">
+          <div>
+            <h2>Sizga Biriktirilgan Fanlar va Guruhlar</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Siz faqat shu guruhlarga imtihon tayinlay olasiz va ularning natijalarini ko'rasiz</p>
+          </div>
+        </div>
+        <div class="stats-grid" id="teacher-assignments-grid">
+          <!-- JS orqali -->
+        </div>
+      </section>
+
+      <!-- 2. TEST YARATISH MODULI (3 XIL USUL) -->
+      <section id="panel-test-builder" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>Test Yaratish Markazi</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Qo'lda birma-bir kiritish, Word (.docx) dan import qilish yoki Gemini AI orqali avtomatik test tuzish</p>
+          </div>
+        </div>
+
+        <!-- Umumiy test parametrlari kartasi -->
+        <div class="content-card" style="margin-bottom: 1.5rem; border-top: 4px solid #6366f1;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; color: #1e1b4b;">
+            <i class="fa-solid fa-gear"></i> 1. Asosiy Test Parametrlari
+          </h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Biriktirilgan Fan va Guruh:</label>
+              <select id="tb-assignment-select" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label>Test Nomi:</label>
+              <input type="text" id="tb-test-title" class="form-control" placeholder="Masalan: 1-oraliq nazorat: Matematika" required>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
+            <div class="form-group">
+              <label>Davomiyligi (daqiqa):</label>
+              <input type="number" id="tb-duration" class="form-control" value="30" min="5" max="180">
+            </div>
+            <div class="form-group">
+              <label>O'tish bali (%):</label>
+              <input type="number" id="tb-passing" class="form-control" value="60" min="1" max="100">
+            </div>
+            <div class="form-group">
+              <label>Imtihon turi:</label>
+              <select id="tb-exam-type" class="form-control">
+                <option value="midterm" selected>Oraliq nazorat</option>
+                <option value="quiz">Joriy nazorat (Quiz)</option>
+                <option value="final">Yakuniy nazorat</option>
+                <option value="diagnostic">Diagnostika</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Boshlang'ich holat:</label>
+              <select id="tb-initial-status" class="form-control">
+                <option value="active" selected>Faol (O'quvchilar ko'radi)</option>
+                <option value="draft">Nofaol / Qoralama (Draft)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 xil usul navigatsiyasi -->
+        <div style="display: flex; gap: 10px; margin-bottom: 1.25rem;">
+          <button class="btn btn-primary tb-tab-btn active" data-tab="manual" id="tb-tab-manual">
+            <i class="fa-solid fa-pen-to-square"></i> Qo'lda birma-bir kiritish
+          </button>
+          <button class="btn btn-outline tb-tab-btn" data-tab="word" id="tb-tab-word">
+            <i class="fa-solid fa-file-word" style="color: #2563eb;"></i> Word / DOCX dan import
+          </button>
+          <button class="btn btn-outline tb-tab-btn" data-tab="ai" id="tb-tab-ai">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #a855f7;"></i> AI orqali yaratish
+          </button>
+        </div>
+
+        <!-- USUL 1: QO'LDA BIRMA-BIR KIRITISH -->
+        <div id="tb-view-manual" class="tb-view active">
+          <div class="content-card" style="margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; color: #1e1b4b;">
+              <i class="fa-solid fa-circle-plus"></i> Yangi Savol Qo'shish
+            </h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Mavzu nomi:</label>
+                <input type="text" id="manual-q-topic" class="form-control" placeholder="Masalan: Kvadrat tenglamalar">
+              </div>
+              <div class="form-group">
+                <label>Qiyinlik darajasi:</label>
+                <select id="manual-q-diff" class="form-control">
+                  <option value="easy">Oson</option>
+                  <option value="medium" selected>O'rta</option>
+                  <option value="hard">Qiyin</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Ball:</label>
+                <input type="number" id="manual-q-points" class="form-control" value="1" min="1" max="20">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label>Savol matni:</label>
+              <textarea id="manual-q-text" class="form-control" rows="3" placeholder="Savol matnini kiriting..."></textarea>
+            </div>
+            <label style="font-weight: 700; margin-bottom: 8px; display: block;">Javob variantlari (To'g'ri variantni belgilang):</label>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="manual_corr" value="0" checked id="man_opt_r0">
+                <input type="text" id="manual-opt-0" class="form-control" placeholder="A varianti">
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="manual_corr" value="1" id="man_opt_r1">
+                <input type="text" id="manual-opt-1" class="form-control" placeholder="B varianti">
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="manual_corr" value="2" id="man_opt_r2">
+                <input type="text" id="manual-opt-2" class="form-control" placeholder="C varianti">
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="manual_corr" value="3" id="man_opt_r3">
+                <input type="text" id="manual-opt-3" class="form-control" placeholder="D varianti">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label>Izoh / Tushuntirish (ixtiyoriy):</label>
+              <input type="text" id="manual-q-exp" class="form-control" placeholder="To'g'ri javob nega to'g'riligi haqida izoh...">
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+              <button class="btn btn-primary" id="btn-add-manual-q">
+                <i class="fa-solid fa-plus"></i> + Savol qo'shish
+              </button>
+            </div>
+          </div>
+
+          <!-- Qo'shilgan savollar ro'yxati -->
+          <div class="content-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e1b4b;">
+                Qo'shilgan Savollar Ro'yxati: <span id="manual-q-count-badge" class="badge badge-primary">0 ta</span>
+              </h3>
+              <div style="display: flex; gap: 10px;">
+                <button class="btn btn-outline btn-sm" id="btn-clear-manual-list">Barchasini tozalash</button>
+                <button class="btn btn-success btn-sm" id="btn-save-manual-test">
+                  <i class="fa-solid fa-floppy-disk"></i> Testni Saqlash
+                </button>
+              </div>
+            </div>
+            <div id="manual-questions-list" style="display: flex; flex-direction: column; gap: 12px;">
+              <p style="color: #94a3b8; font-size: 0.9rem; text-align: center; padding: 20px;">Hozircha birorta savol qo'shilmadi. Yuqoridagi formadan savol kiriting.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- USUL 2: WORD / DOCX IMPORT -->
+        <div id="tb-view-word" class="tb-view" style="display: none;">
+          <div class="content-card" style="margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: #1e1b4b;">
+              <i class="fa-solid fa-file-arrow-up"></i> Word (.docx) Faylni Yuklash
+            </h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">
+              DOCX faylingizdan savollar, 4 ta variant (A, B, C, D) va to'g'ri javoblar avtomatik tarzda ajratib olinadi. Yuklangandan keyin avval ko'rib chiqish oynasi ochiladi.
+            </p>
+
+            <div style="border: 2px dashed #cbd5e1; border-radius: var(--radius-md); padding: 2rem; text-align: center; background: #f8fafc; margin-bottom: 1rem;">
+              <i class="fa-solid fa-file-word" style="font-size: 3rem; color: #2563eb; margin-bottom: 10px;"></i>
+              <p style="font-weight: 600; margin-bottom: 8px;">Word (.docx) faylini tanlang:</p>
+              <input type="file" id="word-file-input" accept=".docx" class="form-control" style="max-width: 350px; margin: 0 auto 12px;">
+              <button class="btn btn-primary" id="btn-upload-word-preview">
+                <i class="fa-solid fa-upload"></i> Word Faylni Tahlil Qilish (Preview)
+              </button>
+            </div>
+
+            <!-- Format namunasi -->
+            <details style="background: #f1f5f9; padding: 12px; border-radius: var(--radius-sm); font-size: 0.85rem; color: #334155;">
+              <summary style="font-weight: 700; cursor: pointer;">Standart Word Format namunasi (bosing)</summary>
+              <pre style="margin-top: 8px; background: #ffffff; padding: 10px; border-radius: 4px; border: 1px solid #e2e8f0; font-family: monospace;">
+TEST NOMI: Matematika 1-oraliq
+
+1. 2 + 2 nechaga teng?
+A) 3
+B) 4
+C) 5
+D) 6
+JAVOB: B
+MAVZU: Arifmetika
+QIYINLIK: Oson
+BALL: 1
+
+2. 5 × 5 nechaga teng?
+A) 10
+B) 15
+C) 20
+D) 25
+JAVOB: D
+              </pre>
+            </details>
+          </div>
+
+          <!-- WORD PREVIEW (IMPORTNI KO'RIB CHIQISH) -->
+          <div id="word-preview-card" class="content-card" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+              <div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e1b4b;">Importni Ko'rib Chiqish</h3>
+                <div id="word-preview-stats" style="display: flex; gap: 10px; margin-top: 6px; font-size: 0.85rem;"></div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-outline btn-sm" id="btn-word-ai-check" style="color: #7c3aed; border-color: #c4b5fd;">
+                  <i class="fa-solid fa-brain"></i> AI Maslahati
+                </button>
+                <button class="btn btn-outline btn-sm" id="btn-word-add-manual-q">
+                  <i class="fa-solid fa-plus"></i> + Qo'lda savol qo'shish
+                </button>
+                <button class="btn btn-success btn-sm" id="btn-confirm-word-import">
+                  <i class="fa-solid fa-check"></i> IMPORTNI TASDIQLASH (Saqlash)
+                </button>
+              </div>
+            </div>
+
+            <div id="word-ai-advice-box" style="display: none; background: #faf5ff; border: 1px solid #d8b4fe; padding: 12px; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; line-height: 1.6;"></div>
+
+            <div id="word-questions-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+          </div>
+        </div>
+
+        <!-- USUL 3: GEMINI AI TEST YARATISH -->
+        <div id="tb-view-ai" class="tb-view" style="display: none;">
+          <div class="content-card" style="margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: #1e1b4b;">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color: #a855f7;"></i> Gemini AI Bilan Test Yaratish
+            </h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.25rem;">
+              Fan va mavzuni kiriting. AI yaratgan savollar darhol bazaga yozilmaydi — avval to'liq ko'rib chiqish, tahrirlash, o'chirish va tasdiqlash imkoniga ega bo'lasiz.
+            </p>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Mavzu nomi:</label>
+                <input type="text" id="ai-tb-topic" class="form-control" placeholder="Masalan: Kvadrat tenglamalar va diskriminant" required>
+              </div>
+              <div class="form-group">
+                <label>Sinf / Kurs darajasi:</label>
+                <select id="ai-tb-grade" class="form-control">
+                  <option value="5">5-sinf</option>
+                  <option value="6">6-sinf</option>
+                  <option value="7">7-sinf</option>
+                  <option value="8">8-sinf</option>
+                  <option value="9">9-sinf</option>
+                  <option value="10" selected>10-sinf</option>
+                  <option value="11">11-sinf</option>
+                  <option value="1">1-kurs</option>
+                  <option value="2">2-kurs</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+              <div class="form-group">
+                <label>Savollar soni (1-30):</label>
+                <input type="number" id="ai-tb-count" class="form-control" value="10" min="1" max="30">
+              </div>
+              <div class="form-group">
+                <label>Qiyinlik darajasi:</label>
+                <select id="ai-tb-difficulty" class="form-control">
+                  <option value="easy">Oson</option>
+                  <option value="medium" selected>O'rta</option>
+                  <option value="hard">Qiyin</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Har bir savol balli:</label>
+                <input type="number" id="ai-tb-points" class="form-control" value="1" min="1" max="20">
+              </div>
+              <div class="form-group">
+                <label>Izoh / Tushuntirish:</label>
+                <select id="ai-tb-exp" class="form-control">
+                  <option value="1" selected>Izoh kerak</option>
+                  <option value="0">Izohsiz</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label>Qo'shimcha talab yoki yo'riqnoma (ixtiyoriy):</label>
+              <input type="text" id="ai-tb-extra" class="form-control" placeholder="Masalan: Formulalar va hisob-kitobga oid savollar ko'proq bo'lsin...">
+            </div>
+            <button class="btn btn-primary btn-block" id="btn-generate-ai-test" style="background: linear-gradient(135deg, #6366f1, #a855f7); padding: 13px;">
+              <i class="fa-solid fa-sparkles"></i> AI Test Savollarini Generatsiya Qilish
+            </button>
+          </div>
+
+          <!-- AI PREVIEW WINDOW -->
+          <div id="ai-preview-card" class="content-card" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+              <div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e1b4b;">AI Yaratgan Test (Preview)</h3>
+                <p id="ai-preview-subtitle" style="font-size: 0.85rem; color: #64748b; margin-top: 2px;"></p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-outline btn-sm" id="btn-ai-add-manual-q">
+                  <i class="fa-solid fa-plus"></i> + Qo'lda savol qo'shish
+                </button>
+                <button class="btn btn-outline btn-sm" id="btn-ai-clear-all">Barchasini tozalash</button>
+                <button class="btn btn-success btn-sm" id="btn-confirm-ai-test">
+                  <i class="fa-solid fa-floppy-disk"></i> Testni Saqlash
+                </button>
+              </div>
+            </div>
+            <div id="ai-questions-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. MENING TEST BAZAM (TEACHER TEST BANK) -->
+      <section id="panel-test-bank" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>Mening Test Bazam</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Siz yaratgan barcha testlar, ularning faol/nofaol holatlari, tahrirlash va Word eksporti</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="document.querySelector('[data-panel=test-builder]').click()">
+            <i class="fa-solid fa-plus"></i> Yangi Test Yaratish
+          </button>
+        </div>
+
+        <!-- Filterlar va Qidiruv -->
+        <div class="content-card" style="padding: 1rem 1.5rem; margin-bottom: 1.5rem;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; align-items: end;">
+            <div class="form-group">
+              <label><i class="fa-solid fa-magnifying-glass"></i> Test qidirish:</label>
+              <input type="text" id="tbk-search-input" class="form-control" placeholder="Test nomi bo'yicha qidirish...">
+            </div>
+            <div class="form-group">
+              <label>Fan bo'yicha filter:</label>
+              <select id="tbk-subject-filter" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Holat bo'yicha filter:</label>
+              <select id="tbk-status-filter" class="form-control">
+                <option value="">Barcha holatlar</option>
+                <option value="active">Faol</option>
+                <option value="draft">Nofaol / Qoralama</option>
+                <option value="finished">Arxivlangan</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testlar Kartalari Ro'yxati -->
+        <div id="tbk-tests-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px;">
+          <!-- JS orqali -->
+        </div>
+      </section>
+
+      <!-- 4. SAVOLLAR BANKI (MAVJUD) -->
+      <section id="panel-question-bank" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>Savollar Banki</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">O'z faningiz bo'yicha savollarni mavzular va qiyinlik darajalari bo'yicha boshqaring</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-primary btn-sm" id="btn-open-add-q">
+              <i class="fa-solid fa-plus"></i> Yangi Savol Qo'shish
+            </button>
+          </div>
+        </div>
+
+        <!-- Filterlar -->
+        <div class="content-card" style="padding: 1rem 1.5rem; margin-bottom: 1.5rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: end;">
+            <div class="form-group">
+              <label>Fan:</label>
+              <select id="qb-subject-select" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Mavzu bo'yicha filter:</label>
+              <select id="qb-topic-select" class="form-control">
+                <option value="">Barcha mavzular</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Qiyinlik:</label>
+              <select id="qb-diff-select" class="form-control">
+                <option value="">Barcha qiyinliklar</option>
+                <option value="easy">Oson</option>
+                <option value="medium">O'rta</option>
+                <option value="hard">Qiyin</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="qb-questions-list"></div>
+      </section>
+
+      <!-- 3. AI SAVOL GENERATORI -->
+      <section id="panel-ai-generator" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>Gemini AI Savol Generatori (1 - 30 ta)</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Mavzu va parametrlarni bering, AI birdaniga to'liq variantli savollar arxitekturasini tuzib beradi</p>
+          </div>
+        </div>
+
+        <div class="content-card" style="max-width: 800px;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Fan:</label>
+              <select id="ai-subject-select" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label>Mavzu:</label>
+              <input type="text" id="ai-topic-input" class="form-control" placeholder="Masalan: Funksiyalar va grafiklar" required>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Savollar soni (1 - 30 ta):</label>
+              <input type="number" id="ai-count-input" class="form-control" value="10" min="1" max="30">
+            </div>
+            <div class="form-group">
+              <label>Qiyinlik darajasi:</label>
+              <select id="ai-difficulty-select" class="form-control">
+                <option value="easy">Oson</option>
+                <option value="medium" selected>O'rta</option>
+                <option value="hard">Qiyin</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>Qo'shimcha talab yoki konspekt matni (ixtiyoriy):</label>
+            <textarea id="ai-extra-input" class="form-control" rows="2" placeholder="Masalan: Grafiklarni aniqlashga oid masalalar ko'proq bo'lsin..."></textarea>
+          </div>
+          <button id="btn-run-ai-gen" class="btn btn-primary btn-block" style="background: linear-gradient(135deg, #6366f1, #a855f7); padding: 13px;">
+            <i class="fa-solid fa-sparkles"></i> AI Savollarni Generatsiya Qilish
+          </button>
+
+          <!-- Natija -->
+          <div id="ai-gen-results-box" style="display: none; margin-top: 1.5rem; border-top: 2px dashed #c7d2fe; padding-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h4 id="ai-gen-title" style="font-weight: 700; color: #1e1b4b;">Generatsiya qilingan savollar:</h4>
+              <button id="btn-save-ai-to-bank" class="btn btn-success btn-sm">
+                <i class="fa-solid fa-check-double"></i> Savollar bankiga saqlash
+              </button>
+            </div>
+            <div id="ai-gen-items-container"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. IMTIHONLAR VA BLUEPRINT -->
+      <section id="panel-tests" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>Mening Imtihonlarim & Test Blueprint</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Guruhlaringiz uchun yangi oraliq, joriy yoki yakuniy nazorat testlarini rejalashtiring</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="btn-open-create-test">
+            <i class="fa-solid fa-plus"></i> Yangi Imtihon Yaratish
+          </button>
+        </div>
+
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Imtihon Nomi</th>
+                  <th>Fan</th>
+                  <th>Guruh</th>
+                  <th>Turi</th>
+                  <th>Vaqt</th>
+                  <th>Savollar</th>
+                  <th>Topshirganlar</th>
+                  <th>O'rtacha Ball</th>
+                </tr>
+              </thead>
+              <tbody id="tests-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. SINF TAHLILI VA AI XULOSA -->
+      <section id="panel-results" class="admin-panel">
+        <div class="section-header">
+          <div>
+            <h2>Sinf Natijalari va Pedagogik AI Tahlil</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Guruh o'quvchilari natijalari, zaif mavzular va o'qituvchi uchun Gemini AI metodik tavsiyalari</p>
+          </div>
+        </div>
+
+        <div class="content-card" style="padding: 1rem 1.5rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; gap: 15px; align-items: center;">
+            <label style="font-weight: 700;">Guruh va Fanni tanlang:</label>
+            <select id="report-assignment-select" class="form-control" style="max-width: 400px;"></select>
+            <button id="btn-load-class-report" class="btn btn-primary btn-sm">
+              <i class="fa-solid fa-chart-line"></i> Natijalarni Ko'rish
+            </button>
+          </div>
+        </div>
+
+        <div id="class-report-container" style="display: none;">
+          <!-- AI Tavsiya Kartasi -->
+          <div class="content-card" style="border: 2px solid #818cf8; background: #faf5ff;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="stat-icon-wrap icon-purple"><i class="fa-solid fa-brain"></i></div>
+                <div>
+                  <h3 style="font-size: 1.15rem; font-weight: 800; color: #1e1b4b;">Guruh Bo'yicha Pedagogik AI Xulosa</h3>
+                  <p style="font-size: 0.85rem; color: #64748b;">Mavzular o'zlashtirilishi tahlili va keyingi dars rejasi uchun tavsiyalar</p>
+                </div>
+              </div>
+              <button id="btn-run-class-ai" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #6366f1, #a855f7);">
+                <i class="fa-solid fa-sparkles"></i> AI Tahlil Olish
+              </button>
+            </div>
+            <div id="class-ai-text-box" style="display: none; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px dashed #c084fc; line-height: 1.7;"></div>
+          </div>
+
+          <!-- Mavzular statistikasi -->
+          <div class="content-card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Mavzular Bo'yicha O'zlashtirish Ko'rsatkichlari</h3>
+            <div id="class-topics-bars"></div>
+          </div>
+
+          <!-- O'quvchilar natijalari jadvali -->
+          <div class="content-card">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">O'quvchilar Natijalari</h3>
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>O'quvchi</th>
+                    <th>ID Kodi</th>
+                    <th>Natija</th>
+                    <th>To'g'ri / Jami</th>
+                    <th>Vaqt</th>
+                  </tr>
+                </thead>
+                <tbody id="class-students-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- MODAL: Yangi Savol Qo'shish -->
+  <div class="modal-overlay" id="modal-add-question">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>Savollar Bankiga Savol Qo'shish</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-question')">&times;</button>
+      </div>
+      <form id="form-add-question">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Fan:</label>
+            <select id="modal-q-subject" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>Mavzu:</label>
+            <select id="modal-q-topic" class="form-control" required></select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Qiyinlik darajasi:</label>
+            <select id="modal-q-diff" class="form-control">
+              <option value="easy">Oson</option>
+              <option value="medium" selected>O'rta</option>
+              <option value="hard">Qiyin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ball:</label>
+            <input type="number" id="modal-q-points" class="form-control" value="1" min="1" max="10">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Savol matni:</label>
+          <textarea id="modal-q-text" class="form-control" rows="3" placeholder="Savol matnini kiriting..." required></textarea>
+        </div>
+        <label style="font-weight: 700; margin-bottom: 6px; display: block;">Javob variantlari (To'g'ri variantni tanlang):</label>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="modal_correct_opt" value="0" checked>
+            <input type="text" class="form-control modal-opt-input" placeholder="A varianti" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="modal_correct_opt" value="1">
+            <input type="text" class="form-control modal-opt-input" placeholder="B varianti" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="modal_correct_opt" value="2">
+            <input type="text" class="form-control modal-opt-input" placeholder="C varianti" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="modal_correct_opt" value="3">
+            <input type="text" class="form-control modal-opt-input" placeholder="D varianti" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>Tushuntirish / Izoh (ixtiyoriy):</label>
+          <input type="text" id="modal-q-exp" class="form-control" placeholder="To'g'ri javob nega to'g'riligi haqida izoh...">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-question')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Test Blueprint Yaratish -->
+  <div class="modal-overlay" id="modal-create-test">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>Yangi Imtihon Rejalashtirish</h3>
+        <button class="modal-close" onclick="closeModal('modal-create-test')">&times;</button>
+      </div>
+      <form id="form-create-test">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Biriktirilgan Guruh va Fan:</label>
+          <select id="test-assignment-select" class="form-control" required></select>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Imtihon Nomi:</label>
+          <input type="text" id="test-title" class="form-control" placeholder="1-oraliq nazorat: Matematika" required>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Davomiyligi (daqiqa):</label>
+            <input type="number" id="test-duration" class="form-control" value="30" min="5" max="180">
+          </div>
+          <div class="form-group">
+            <label>O'tish bali (%):</label>
+            <input type="number" id="test-passing" class="form-control" value="60" min="1" max="100">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Imtihon turi:</label>
+            <select id="test-type" class="form-control">
+              <option value="quiz">Joriy nazorat (Quiz)</option>
+              <option value="midterm" selected>Oraliq nazorat</option>
+              <option value="final">Yakuniy nazorat</option>
+              <option value="diagnostic">Diagnostika</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Savollar bankidan avto-tanlash (soni):</label>
+            <input type="number" id="test-auto-count" class="form-control" value="15" min="1" max="50">
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-test')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">Imtihonni Faollashtirish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Testni Tahrirlash va Savollarini Boshqarish -->
+  <div class="modal-overlay" id="modal-manage-test">
+    <div class="modal-box" style="max-width: 850px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3 id="manage-test-modal-title">Testni Tahrirlash va Boshqarish</h3>
+        <button class="modal-close" onclick="closeModal('modal-manage-test')">&times;</button>
+      </div>
+
+      <!-- Test parametrlari formasi -->
+      <form id="form-manage-test-details" style="margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 2px solid #f1f5f9;">
+        <input type="hidden" id="manage-test-id">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Test Nomi:</label>
+            <input type="text" id="manage-test-name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Guruh & Fan:</label>
+            <input type="text" id="manage-test-subject-group" class="form-control" readonly style="background: #f8fafc;">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+          <div class="form-group">
+            <label>Vaqt (daqiqa):</label>
+            <input type="number" id="manage-test-duration" class="form-control" min="5" max="180">
+          </div>
+          <div class="form-group">
+            <label>O'tish bali (%):</label>
+            <input type="number" id="manage-test-passing" class="form-control" min="1" max="100">
+          </div>
+          <div class="form-group">
+            <label>Imtihon turi:</label>
+            <select id="manage-test-type" class="form-control">
+              <option value="midterm">Oraliq</option>
+              <option value="quiz">Quiz</option>
+              <option value="final">Yakuniy</option>
+              <option value="diagnostic">Diagnostika</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Holati:</label>
+            <select id="manage-test-status" class="form-control">
+              <option value="active">Faol</option>
+              <option value="draft">Nofaol / Qoralama</option>
+              <option value="finished">Arxivlangan</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-check"></i> Test Parametrlarini Saqlash
+          </button>
+        </div>
+      </form>
+
+      <!-- Testdagi savollar ro'yxati -->
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h4 style="font-weight: 700; color: #1e1b4b;">
+            Testdagi Savollar: <span id="manage-test-q-count" class="badge badge-primary">0 ta</span>
+          </h4>
+          <button class="btn btn-success btn-sm" id="btn-open-append-q">
+            <i class="fa-solid fa-plus"></i> + Yangi Savol Qo'shish
+          </button>
+        </div>
+        <div id="manage-test-questions-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Yangi Savol Qo'shish (Testga qo'shish) -->
+  <div class="modal-overlay" id="modal-append-question-to-test">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>Testga Yangi Savol Qo'shish</h3>
+        <button class="modal-close" onclick="closeModal('modal-append-question-to-test')">&times;</button>
+      </div>
+      <form id="form-append-question">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mavzu:</label>
+            <input type="text" id="append-q-topic" class="form-control" placeholder="Mavzu nomi" required>
+          </div>
+          <div class="form-group">
+            <label>Qiyinlik:</label>
+            <select id="append-q-diff" class="form-control">
+              <option value="easy">Oson</option>
+              <option value="medium" selected>O'rta</option>
+              <option value="hard">Qiyin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ball:</label>
+            <input type="number" id="append-q-points" class="form-control" value="1" min="1" max="20">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Savol matni:</label>
+          <textarea id="append-q-text" class="form-control" rows="3" required placeholder="Savol matnini kiriting..."></textarea>
+        </div>
+        <label style="font-weight: 700; margin-bottom: 6px; display: block;">Javob variantlari (To'g'ri variantni tanlang):</label>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="append_corr" value="0" checked>
+            <input type="text" id="append-opt-0" class="form-control" placeholder="A varianti" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="append_corr" value="1">
+            <input type="text" id="append-opt-1" class="form-control" placeholder="B varianti" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="append_corr" value="2">
+            <input type="text" id="append-opt-2" class="form-control" placeholder="C varianti" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="append_corr" value="3">
+            <input type="text" id="append-opt-3" class="form-control" placeholder="D varianti" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>Izoh / Tushuntirish (ixtiyoriy):</label>
+          <input type="text" id="append-q-exp" class="form-control" placeholder="To'g'ri javob izohi...">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-append-question-to-test')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">+ Testga Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Bitta Savolni Tahrirlash -->
+  <div class="modal-overlay" id="modal-edit-question-detail">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>Savolni Tahrirlash</h3>
+        <button class="modal-close" onclick="closeModal('modal-edit-question-detail')">&times;</button>
+      </div>
+      <form id="form-edit-question-detail">
+        <input type="hidden" id="edit-q-id">
+        <input type="hidden" id="edit-q-test-id">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Qiyinlik:</label>
+            <select id="edit-q-diff" class="form-control">
+              <option value="easy">Oson</option>
+              <option value="medium">O'rta</option>
+              <option value="hard">Qiyin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ball:</label>
+            <input type="number" id="edit-q-points" class="form-control" min="1" max="20">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label>Savol matni:</label>
+          <textarea id="edit-q-text" class="form-control" rows="3" required></textarea>
+        </div>
+        <label style="font-weight: 700; margin-bottom: 6px; display: block;">Javob variantlari (To'g'ri variantni tanlang):</label>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="edit_corr" value="0" id="edit-opt-r0">
+            <input type="text" id="edit-opt-0" class="form-control" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="edit_corr" value="1" id="edit-opt-r1">
+            <input type="text" id="edit-opt-1" class="form-control" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="edit_corr" value="2" id="edit-opt-r2">
+            <input type="text" id="edit-opt-2" class="form-control" required>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="radio" name="edit_corr" value="3" id="edit-opt-r3">
+            <input type="text" id="edit-opt-3" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>Izoh / Tushuntirish:</label>
+          <input type="text" id="edit-q-exp" class="form-control">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-edit-question-detail')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary">O'zgarishlarni Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: GURUHLAR BO'YICHA TESTGA RUXSAT VA YAKUNLASH -->
+  <div class="modal-overlay" id="modal-group-access">
+    <div class="modal-box" style="max-width: 820px;">
+      <div class="modal-header">
+        <div>
+          <h2 id="mga-test-title">Test Ruxsatlarini Boshqarish</h2>
+          <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">
+            Qaysi guruh(lar)ga test boshlanishi va tugashini belgilang. Yakunlangach barcha talabalarga natijalar e'lon qilinadi.
+          </p>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-group-access')">&times;</button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button id="mga-btn-grant" class="btn btn-success btn-sm" style="padding: 8px 16px;">
+            <i class="fa-solid fa-play"></i> Tanlangan Guruhlarga Boshlash (Ruxsat)
+          </button>
+          <button id="mga-btn-stop" class="btn btn-danger btn-sm" style="padding: 8px 16px;">
+            <i class="fa-solid fa-flag-checkered"></i> Yakunlash va Natijalarni E'lon Qilish
+          </button>
+        </div>
+        <button id="mga-btn-refresh" class="btn btn-outline btn-sm" title="Yangilash">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 40px; text-align: center;">
+                <input type="checkbox" id="mga-check-all">
+              </th>
+              <th>Guruh</th>
+              <th>O'quvchilar</th>
+              <th>Test Holati</th>
+              <th>Boshlangan Vaqti</th>
+              <th>Yakunlangan Vaqti</th>
+              <th>Natijalar</th>
+            </tr>
+          </thead>
+          <tbody id="mga-groups-tbody">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Yuklanmoqda...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 1.25rem; display: flex; justify-content: flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modal-group-access')">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/teacher.js"></script>
+</body>
+</html>

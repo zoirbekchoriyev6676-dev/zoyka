@@ -1,0 +1,15 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+venv_broken/
+backup_before_camera/
+scratch/
+.git/
+.gitignore
+.vscode/
+database/*.audit_backup
+database/*.bak
